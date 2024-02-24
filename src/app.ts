@@ -1,7 +1,7 @@
 import express from 'express'
 import { createServer } from 'node:http'
 import { Server } from 'socket.io'
-import userRouter from './routes/user.ts'
+import { SingRouter } from './routes/sing.ts'
 import { UserModeldb } from './db/mysql/user.ts'
 interface InitizelAppDb {
   userModelDb: UserModeldb
@@ -12,10 +12,11 @@ interface InitizelApp {
 }
 export function initizelApp ({ Db }: InitizelApp): void {
   const { userModelDb } = Db
-  console.log(userModelDb)
   const app = express()
   app.use(express.json())
-  app.use('/user', userRouter)
+
+  //  routes
+  app.use('/', SingRouter({ userModelDb }))
 
   //  socket.io
   const server = createServer(app)

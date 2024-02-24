@@ -1,8 +1,9 @@
-import { ResultSetHeader, FieldPacket } from 'mysql2'
+import { ResultSetHeader, FieldPacket, RowDataPacket } from 'mysql2'
 import { createConnection } from './createConectiondb.ts'
 export const pool = await createConnection()
 
 type ResultCreateUser = [ResultSetHeader, FieldPacket[]] | undefined
+type ResultGetUserByPhone = [RowDataPacket[], FieldPacket[]] | undefined
 /**
  * @class UserModel - A class that contains all the methods that are related to the user model
  */
@@ -24,12 +25,13 @@ export class UserModel {
     }
   }
 
-  static async getUserById (id: number): Promise<void> {
+  static async getUserByPhone (phone: number): Promise<ResultGetUserByPhone> {
     try {
-      const result = await pool?.query('SELECT * FROM user WHERE id = ?', [id])
+      const result = await pool?.query<RowDataPacket[]>('SELECT * FROM user WHERE phone = ?', [phone])
       console.log(result)
+      return result
     } catch (error) {
-      console.error('Error: ', error)
+      return undefined
     }
   }
 
