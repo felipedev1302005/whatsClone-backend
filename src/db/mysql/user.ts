@@ -17,7 +17,7 @@ export class UserModel {
    */
   static async createUser (username: string, phone: number, password: string): Promise<ResultCreateUser> {
     try {
-      const result = await pool?.query<ResultSetHeader>('INSERT INTO user (username, phone, pasword) VALUES (?, ?, ?)', [username, phone, password])
+      const result = await pool?.query<ResultSetHeader>('INSERT INTO user (username, phone, password) VALUES (?, ?, ?)', [username, phone, password])
       return result
     } catch (error) {
       console.error('Error: ', error)

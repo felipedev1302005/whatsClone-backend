@@ -45,7 +45,6 @@ export class UserController {
       }
       const decoded = jws.verify(token, process.env.JWT_KEY as string)
       const result = await this.UserModelDb.getUserByPhone(decoded.phone as number)
-      console.log(result)
       if (result !== undefined && result[0].length === 1) {
         return res.status(200).json({ user: result[0][0] })
       }
