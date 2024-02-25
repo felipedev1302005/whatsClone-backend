@@ -3,3 +3,7 @@ export interface userBasicInfo {
   phone: number
   password: string
 }
+export interface chatBasicInfo {
+  user_1: number
+  user_2: number
+}

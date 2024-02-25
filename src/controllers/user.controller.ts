@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { UserModeldb } from '../db/mysql/user.ts'
-import type { userBasicInfo } from '../types/types.d.ts'
+import type { userBasicInfo } from '../types/types'
 import jws from 'jsonwebtoken'
 
 export class UserController {
@@ -24,11 +24,11 @@ export class UserController {
         const token = jws.sign({ phone }, process.env.JWT_KEY as string)
         return res.status(201).json({ token: `Berer ${token}` })
       }
+      return res.status(405).json({msg:'ni idea'})
     } catch (error) {
       console.error('Error: ', error)
       return res.status(500).json({ message: 'Internal server error' }) as unknown as undefined
     }
-    return res.status(500).json({ message: 'Internal server error' }) as unknown as undefined
   }
 
   /**

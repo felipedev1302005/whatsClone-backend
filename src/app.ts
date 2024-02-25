@@ -3,21 +3,24 @@ import { createServer } from 'node:http'
 import { Server } from 'socket.io'
 import { SingRouter } from './routes/sing.ts'
 import { UserModeldb } from './db/mysql/user.ts'
+import { ChatModeldb } from './db/mysql/chat.tdo.ts'
+import { ChatRouter } from './routes/chat.ts'
 interface InitizelAppDb {
   userModelDb: UserModeldb
+  chatModelDb: ChatModeldb
 
 }
 interface InitizelApp {
   Db: InitizelAppDb
 }
 export function initizelApp ({ Db }: InitizelApp): void {
-  const { userModelDb } = Db
+  const { userModelDb,chatModelDb } = Db
   const app = express()
   app.use(express.json())
 
   //  routes
   app.use('/', SingRouter({ userModelDb }))
-
+  app.use('/chat',ChatRouter({chatModelDb}))
   //  socket.io
   const server = createServer(app)
   const io = new Server(server, { /* options */ })
