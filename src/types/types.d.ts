@@ -7,3 +7,9 @@ export interface chatBasicInfo {
   user_1: number
   user_2: number
 }
+export interface messageBasicInfo {
+  chat_id: string
+  of_user:number
+  message_content:string
+  date: Date
+}
