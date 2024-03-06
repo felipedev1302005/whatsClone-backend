@@ -104,7 +104,7 @@ export class UserController {
    * @param res  - Response that contains all the users from the database
    * @returns  Recover all the users basic info from the database
    */
-  recoverAllUsers = async (
+  recoverUsers = async (
     req: Request<
       unknown,
       unknown,
