@@ -1,6 +1,7 @@
 import express from 'express'
 import { createServer } from 'node:http'
 import { Server } from 'socket.io'
+import cors from 'cors'
 import { SingRouter } from './routes/sing.ts'
 import { ChatRouter } from './routes/chat.ts'
 import { MessageRouter } from './routes/messages.ts'
@@ -21,7 +22,7 @@ export function initizelApp ({ Db }: InitizelApp): void {
   const { userModelDb,chatModelDb,messageModelDb } = Db
   const app = express()
   app.use(express.json())
-
+  app.use(cors())
   //  routes
   app.use('/', SingRouter({ userModelDb }))
   app.use('/chat',ChatRouter({chatModelDb}))

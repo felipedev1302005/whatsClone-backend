@@ -5,6 +5,5 @@ export function CreateUserRouter ({ userModelDb }: { userModelDb: UserModeldb })
   const userRouter = Router()
   const UserController = new UserCont(userModelDb)
   userRouter.get('/', UserController.recoverAllUsers)
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return userRouter
 }

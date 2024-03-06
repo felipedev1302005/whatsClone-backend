@@ -36,12 +36,24 @@ export class UserModel {
    * 
    * @returns A promise that contains the result of the query
    */
-  static async getAllUsers (): Promise<ResultGetUserByPhone> {
+  static async getAllUsers (searchName:string | undefined, searchPhone:string | undefined): Promise<ResultGetUserByPhone> {
     try {
+      if(searchName && searchPhone){
+        const result = await pool?.query<RowDataPacket[]>('SELECT * FROM user WHERE username LIKE ? AND phone LIKE ?', [`%${searchName}%`, `%${searchPhone}%`])
+        return result
+      }
+      if(searchName){
+        const result = await pool?.query<RowDataPacket[]>('SELECT * FROM user WHERE username LIKE ?', [`%${searchName}%`])
+        return result
+      }
+      if(searchPhone){
+        const result = await pool?.query<RowDataPacket[]>('SELECT * FROM user WHERE phone LIKE ?', [`%${searchPhone}%`])
+        return result
+      }
       const result = await pool?.query<RowDataPacket[]>('SELECT * FROM user')
       return result
     } catch (error) {
-      throw new Error("Error: Can't get the user");
+      throw new Error("Error: Can't get the users");
     }
   }
 
