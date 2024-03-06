@@ -35,7 +35,34 @@ export class UserController {
         .json({ message: "Internal server error" }) as unknown as undefined;
     }
   };
-
+  /**
+   * 
+   * @param req  - Request that contains the user's basic information
+   * @param res  - Response that contains the token or an error message
+   * @returns  Recover the user's data and return a token or an error message
+   */
+  recoverUserAndReturnAJwt = async (
+    req: Request<unknown, unknown, userBasicInfo>,
+    res: Response
+  ) => {
+    try {
+      const { phone, password } = req.body;
+      const result = await this.UserModelDb.getUserByPhone(phone);
+      if (result !== undefined && result[0].length === 1) {
+        if (result[0][0].password === password) {
+          const token = jws.sign({ phone }, process.env.JWT_KEY as string);
+          return res.status(200).json({ token: `Berer ${token}` });
+        }
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      return res.status(404).json({ message: "User not found" });
+    } catch (error) {
+      console.error("Error: ", error);
+      return res
+        .status(500)
+        .json({ message: "Internal server error" }) as unknown as undefined;
+    }
+  }
   /**
    *
    * @param req - Request that contains the token
@@ -82,14 +109,13 @@ export class UserController {
       unknown,
       unknown,
       unknown,
-      { searchName: string; searchPhone: string }
+      { search:string | undefined }
     >,
     res: Response
   ): Promise<unknown> => {
     try {
-      console.log(req.query);
-      const { searchName, searchPhone } = req.query;
-      let result = await this.UserModelDb.getAllUsers(searchName, searchPhone);
+      const { search } = req.query;
+      let result = await this.UserModelDb.getAllUsers(search);
       if (result !== undefined && result[0].length > 0) {
         return res.status(200).json({
           users: result[0].map((user) => {
