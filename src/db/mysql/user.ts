@@ -20,18 +20,28 @@ export class UserModel {
       const result = await pool?.query<ResultSetHeader>('INSERT INTO user (username, phone, password) VALUES (?, ?, ?)', [username, phone, password])
       return result
     } catch (error) {
-      console.error('Error: ', error)
-      return undefined
+      throw new Error("Error: Can't create the user");
     }
   }
 
   static async getUserByPhone (phone: number): Promise<ResultGetUserByPhone> {
     try {
       const result = await pool?.query<RowDataPacket[]>('SELECT * FROM user WHERE phone = ?', [phone])
-      console.log(result)
       return result
     } catch (error) {
-      return undefined
+      throw new Error("Error: Can't get the user");
+    }
+  }
+  /**
+   * 
+   * @returns A promise that contains the result of the query
+   */
+  static async getAllUsers (): Promise<ResultGetUserByPhone> {
+    try {
+      const result = await pool?.query<RowDataPacket[]>('SELECT * FROM user')
+      return result
+    } catch (error) {
+      throw new Error("Error: Can't get the user");
     }
   }
 

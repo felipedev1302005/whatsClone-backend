@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { UserModeldb } from '../db/mysql/user.ts'
-import type { userBasicInfo } from '../types/types'
+import type { userBasicInfo,verifyTokenUser } from '../types/types'
 import jws from 'jsonwebtoken'
 
 export class UserController {
@@ -24,7 +24,7 @@ export class UserController {
         const token = jws.sign({ phone }, process.env.JWT_KEY as string)
         return res.status(201).json({ token: `Berer ${token}` })
       }
-      return res.status(405).json({msg:'ni idea'})
+      return res.status(405).json({msg:'error al crear el usuario'})
     } catch (error) {
       console.error('Error: ', error)
       return res.status(500).json({ message: 'Internal server error' }) as unknown as undefined
@@ -43,12 +43,41 @@ export class UserController {
       if (token === undefined) {
         return res.status(401).json({ message: 'Unauthorized' })
       }
-      const decoded = jws.verify(token, process.env.JWT_KEY as string)
-      const result = await this.UserModelDb.getUserByPhone(decoded.phone as number)
+      const decoded = jws.verify(token, process.env.JWT_KEY as string) as verifyTokenUser
+      const result = await this.UserModelDb.getUserByPhone(decoded.phone)
       if (result !== undefined && result[0].length === 1) {
-        return res.status(200).json({ user: result[0][0] })
+        const user = {
+          username: result[0][0].username,
+          phone: result[0][0].phone
+        }
+        return res.status(200).json({ user })
       }
       return res.status(404).json({ message: 'User not found' })
+    } catch (error) {
+      console.error('Error: ', error)
+      return res.status(500).json({ message: 'Internal server error' }) as unknown as undefined
+    }
+  }
+  /**
+   * 
+   * @param req 
+   * @param res  - Response that contains all the users from the database
+   * @returns  Recover all the users basic info from the database
+   */
+  recoverAllUsers = async (req: Request, res: Response): Promise<unknown> => {
+    try {
+      let result = await this.UserModelDb.getAllUsers()
+      if (result !== undefined && result[0].length > 0) {
+        return res.status(200).json({ 
+          users: result[0].map((user) => {
+            return {
+              username: user.username,
+              phone: user.phone
+            }
+          })
+         })
+      }
+      return res.status(404).json({ message: 'Users not found' })
     } catch (error) {
       console.error('Error: ', error)
       return res.status(500).json({ message: 'Internal server error' }) as unknown as undefined

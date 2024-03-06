@@ -13,3 +13,7 @@ export interface messageBasicInfo {
   message_content:string
   date: Date
 }
+export interface verifyTokenUser {
+  phone: number
+  iat: number
+}

@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { messageModeldb } from "../db/mysql/message.dto.ts";
+import { MessageModeldb } from "../db/mysql/message.dto.ts";
 import { MessageController as msgController} from "../controllers/message.controller.ts";
-export function MessageRouter({ messageModeldb }: { messageModeldb: messageModeldb }) {
+export function MessageRouter({ messageModelDb }: { messageModelDb: MessageModeldb }) {
     const MessageRouter = Router()
-    const MessageController = new msgController(messageModeldb)
+    const MessageController = new msgController(messageModelDb)
     MessageRouter.post('/',MessageController.createMessage)
     MessageRouter.get('/:chat_id',MessageController.getMessagesByChatId)
+    return MessageRouter
 }

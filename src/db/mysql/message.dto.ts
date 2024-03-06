@@ -29,4 +29,4 @@ export class MessageModel {
       }
   }
 }
-export type messageModeldb = typeof MessageModel
+export type MessageModeldb = typeof MessageModel

@@ -1,10 +1,13 @@
 import { Request, Response } from "express";
-import { messageModeldb } from "../db/mysql/message.dto.ts";
+import { MessageModeldb } from "../db/mysql/message.dto.ts";
 import { messageBasicInfo } from "../types/types";
+interface paramsOfGetMessagesByChatId {
+  chat_id: string
+}
 
 export class MessageController {
-  private readonly chatModelDto: messageModeldb;
-  constructor(chatModelDto: messageModeldb) {
+  private readonly chatModelDto: MessageModeldb;
+  constructor(chatModelDto: MessageModeldb) {
     this.chatModelDto = chatModelDto;
   }
   createMessage = async ({ body }: Request<unknown, unknown, messageBasicInfo>, res: Response) => {
@@ -21,10 +24,9 @@ export class MessageController {
         res.status(500).json({ message: 'Internal server error' })
     }
   };
-  getMessagesByChatId = async (req: Request<unknown, unknown, unknown, unknown >,res: Response) => {
-    const chat_id = req.params?.chat_id as string
-    try {
-        const result = await this.chatModelDto.getMessageByChatId({chat_id});
+  getMessagesByChatId = async ({params}: Request<paramsOfGetMessagesByChatId, unknown, unknown, unknown >,res: Response) => {
+        try {
+        const result = await this.chatModelDto.getMessageByChatId({chat_id:params.chat_id});
       if (result !== undefined && result[0].length > 0) {
         res.status(200).json({ chats: result[0] });
       } else {

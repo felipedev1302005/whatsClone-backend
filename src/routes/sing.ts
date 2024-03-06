@@ -6,8 +6,8 @@ export function SingRouter ({ userModelDb }: { userModelDb: UserModeldb }): Rout
   const UserController = new UserCont(userModelDb)
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  userRouter.post('/singIn', UserController.createUserThatReturnAJwt)
+  userRouter.post('/singUp', UserController.createUserThatReturnAJwt)
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  userRouter.post('/singUp', UserController.recoverUserDataFromToken)
+  userRouter.post('/singIn', UserController.recoverUserDataFromToken)
   return userRouter
 }
